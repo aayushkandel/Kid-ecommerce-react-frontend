@@ -9,32 +9,43 @@ import About from './pages/about/index.jsx'
 import Contact from './pages/contact/index.jsx'
 import { BrowserRouter, createBrowserRouter } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
+import Header from './components/header/index.jsx'
 
 const router = createBrowserRouter([
+  
     {
       path: "/",
       element: <App />,
+      children:[
+        {
+      path:"/",
+      element:<Home/>,
     },
     {
       path: "/shop",
-      element: <Shop />
+      element: <> <Shop /></>
     },
     {
       path: "/news",
-      element: <News />
+      element: <> <News /></>
     },
     {
       path: "/about",
-      element: <About />
+      element: <><About /></>
     },
     {
       path: "/contact",
-      element: <Contact />
+      element:<> <Contact /></>
     }
+      ]
+
+    }
+    
   ])
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+    
     <RouterProvider router={router} />
   </StrictMode>,
 )

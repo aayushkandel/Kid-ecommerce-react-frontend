@@ -11,11 +11,12 @@ import Contact from './pages/contact'
 import News from './pages/news'
 import Shop from './pages/shop'
 import About from './pages/about'
-import { BrowserRouter, createBrowserRouter } from 'react-router';
+import { BrowserRouter, createBrowserRouter, Outlet } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
 
 function App() {
-  
+ 
+
 
   return (
     <>
@@ -24,7 +25,7 @@ function App() {
           {/* header */}
           <Header />
 
-          <Home />
+          <Outlet/>
 
           <Footer />
 
