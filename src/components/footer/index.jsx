@@ -12,11 +12,11 @@ function Footer () {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="1.5"
+                strokeWidth="1.5"
               >
                 <rect x="2" y="5" width="20" height="14" rx="2" />
-                <path stroke-linecap="round" d="M2 9h20" />
-                <path stroke-linecap="round" d="M5 15h4" />
+                <path strokeLinecap="round" d="M2 9h20" />
+                <path strokeLinecap="round" d="M5 15h4" />
               </svg>
               <div>
                 <h3 className="font-bold text-white">Secure Payments</h3>
@@ -35,16 +35,16 @@ function Footer () {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="1.5"
+                strokeWidth="1.5"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M2 8h11v8H2z"
                 />
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M13 11h4l3 3v2h-7z"
                 />
                 <circle cx="6" cy="18" r="1.5" />
@@ -66,15 +66,15 @@ function Footer () {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="1.5"
+                strokeWidth="1.5"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"
                 />
                 <path
-                  stroke-linecap="round"
+                  strokeLinecap="round"
                   d="M10 10a2 2 0 113 1.7c-.6.4-1 1-1 1.8"
                 />
                 <circle cx="12" cy="16" r="0.5" fill="currentColor" />
@@ -95,17 +95,17 @@ function Footer () {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="1.5"
+                strokeWidth="1.5"
               >
                 <rect x="3" y="9" width="18" height="4" rx="1" />
                 <path
-                  stroke-linecap="round"
+                  strokeLinecap="round"
                   d="M5 13v7a1 1 0 001 1h12a1 1 0 001-1v-7"
                 />
-                <path stroke-linecap="round" d="M12 9v12" />
+                <path strokeLinecap="round" d="M12 9v12" />
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M12 9c-1.5 0-3-1-3-2.5S10 4 11 4.5 12 7 12 9zM12 9c1.5 0 3-1 3-2.5S14 4 13 4.5 12 7 12 9z"
                 />
               </svg>
@@ -214,16 +214,16 @@ function Footer () {
           </svg>
         </a>
         <a href="#" className="flex items-center justify-center h-9 w-9 rounded-full bg-slate-800 text-white hover:bg-slate-900 transition-colors duration-200">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
             <rect x="3" y="3" width="18" height="18" rx="5" />
             <circle cx="12" cy="12" r="4" />
             <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none" />
           </svg>
         </a>
         <a href="#" className="flex items-center justify-center h-9 w-9 rounded-full bg-slate-800 text-white hover:bg-slate-900 transition-colors duration-200">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3a9 9 0 100 18 9 9 0 000-18z" />
-            <path stroke-linecap="round" d="M9 9.5a3 3 0 016 0c0 2-3 2.5-3 4.5m0 3h.01" />
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3a9 9 0 100 18 9 9 0 000-18z" />
+            <path strokeLinecap="round" d="M9 9.5a3 3 0 016 0c0 2-3 2.5-3 4.5m0 3h.01" />
           </svg>
         </a>
         <a href="#" className="flex items-center justify-center h-9 w-9 rounded-full bg-slate-800 text-white hover:bg-slate-900 transition-colors duration-200">

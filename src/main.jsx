@@ -10,6 +10,8 @@ import Contact from './pages/contact/index.jsx'
 import { BrowserRouter, createBrowserRouter } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
 import Header from './components/header/index.jsx'
+import LoginForm from './components/user/LoginForm.jsx'
+import ProductDetails from './pages/shop/product/productDetails.jsx'
 
 const router = createBrowserRouter([
   
@@ -36,7 +38,15 @@ const router = createBrowserRouter([
     {
       path: "/contact",
       element:<> <Contact /></>
-    }
+    },
+    {
+      path: "/login",
+      element: <><LoginForm/></>
+    },
+     {
+      path: "/product_details/:id",
+      element: <><ProductDetails/></>
+    },
       ]
 
     }

@@ -1,81 +1,46 @@
 
+import { getProduct,getImage } from "../../api/apiRouter";
 import Compare from "../../components/cart_buttons/compare";
 import View from "../../components/cart_buttons/view";
 import WishList from "../../components/cart_buttons/wishList";
 import ProductCard from "../../components/home/product_card";
+import React,{useState,useEffect} from "react";
 
 
 function Home() {
-  const products = [
-    {
-      name: "Fames Primis",
-      category: "SWEATERS",
-      price: 35.00,
-      image: "src/assets/card-1.webp"
-    },
+ 
+  const [products,setProducts]=useState([]);
 
-    {
-      name: "Justo Finibus",
-      category: "DRESSES",
-      price: 20.00,
-      image: "src/assets/card-2.webp"
-    },
-    {
-      name: "Montes Dictum",
-      category: "HATS & SCARFS",
-      price: 30.00,
-      image: "src/assets/card-3.webp"
-    },
+  const getProductData = async () => {
+  const response = await getProduct();
 
-    {
-      name: "Morbi Dapibus",
-      category: "SHOES & SHOCKS",
-      price: 35.00,
-      image: "src/assets/card-4.webp"
-    },
+  const productsWithImages = await Promise.all(
+    response.data.map(async (product) => {
+      try {
+        const imageResponse = await getImage(product.id);
 
-    {
-      name: "Porta Primis",
-      category: "TOYS & GAMES",
-      price: 17.00,
-      image: "src/assets/card-5.webp"
-    },
+        const firstImage = imageResponse.data.images[0];
 
-    {
-      name: "Quam Venenatis",
-      category: "T-SHIRTS",
-      price: 25.00,
-      image: "src/assets/card-6.webp"
-    },
-    {
-      name: "Tellus Conubia",
-      category: "TOYS & GAMES",
-      price: 20.00,
-      image: "src/assets/card-7.webp"
-    },
+        return {
+          ...product,
+          image: firstImage.image
+        };
+      } catch (error) {
+        return {
+          ...product,
+          image: null
+        };
+      }
+    })
+  );
 
-    {
-      name: "Velit Eleifend",
-      category: "TOYS & GAMES",
-      price: 15.00,
-      image: "src/assets/card-8.webp"
-    },
+  setProducts(productsWithImages);
+  console.log(productsWithImages);
+};
 
-    {
-      name: "Tellus Conubia",
-      category: "TOYS & GAMES",
-      price: 20.00,
-      image: "src/assets/card-7.webp"
-    },
-
-    {
-      name: "Velit Eleifend",
-      category: "TOYS & GAMES",
-      price: 15.00,
-      image: "src/assets/card-8.webp"
-    }
-  ];
-
+ useEffect(()=>{
+  getProductData();
+ },[]);
 
 	return (
 		<>
@@ -109,11 +74,11 @@ function Home() {
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2.5"
+                  strokeWidth="2.5"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M7 17L17 7M17 7H7M17 7V17"
                   />
                 </svg>
@@ -174,7 +139,7 @@ function Home() {
                   <path
                     fill="white"
                     stroke="#e5d9f2"
-                    stroke-width="2"
+                    strokeWidth="2"
                     d="M100 0
                    L112 20 L135 8 L138 33 L163 30 L157 55 L182 61 L167 82 L188 96
                    L167 110 L182 131 L157 137 L163 162 L138 159 L135 184 L112 172
@@ -251,11 +216,11 @@ function Home() {
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2.5"
+                  strokeWidth="2.5"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M7 17L17 7M17 7H7M17 7V17"
                   />
                 </svg>
@@ -292,11 +257,11 @@ function Home() {
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2.5"
+                  strokeWidth="2.5"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M7 17L17 7M17 7H7M17 7V17"
                   />
                 </svg>
@@ -335,11 +300,11 @@ function Home() {
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2.5"
+                  strokeWidth="2.5"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M7 17L17 7M17 7H7M17 7V17"
                   />
                 </svg>
@@ -418,11 +383,11 @@ function Home() {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              stroke-width="2.5"
+              strokeWidth="2.5"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M7 17L17 7M17 7H7M17 7V17"
               />
             </svg>
@@ -434,8 +399,8 @@ function Home() {
           
 
          {
-          products.map(({ name, category, price, image}) => (
-            <ProductCard name={name} category={category} price={price} image={image} />
+          products.map(({id, name, category, price, image}) => (
+            <ProductCard key={id} id={id} name={name} category={category} price={price} image={image} />
           ))
          }
           
@@ -486,21 +451,21 @@ function Home() {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              stroke-width="1.5"
+              strokeWidth="1.5"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M4 15c0-4.4 3.6-8 8-8s8 3.6 8 8"
               />
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M3 15h18v1.5a1.5 1.5 0 01-1.5 1.5h-15A1.5 1.5 0 013 16.5V15z"
               />
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M12 7V5m-3 3l-1-2m7 2l1-2"
               />
             </svg>
@@ -517,11 +482,11 @@ function Home() {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                strokeWidth="2"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M17 8l4 4m0 0l-4 4m4-4H3"
                 />
               </svg>
@@ -539,18 +504,18 @@ function Home() {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              stroke-width="1.5"
+              strokeWidth="1.5"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M4 19c0-2 1.5-3 3-3h1l2-4 3 1 2-2 3 2-1 3c1 .5 2 1.5 2 3"
               />
               <circle cx="7" cy="19" r="1.2" />
               <circle cx="16" cy="19" r="1.2" />
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M9 12l-2 2"
               />
             </svg>
@@ -567,11 +532,11 @@ function Home() {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                strokeWidth="2"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M17 8l4 4m0 0l-4 4m4-4H3"
                 />
               </svg>
@@ -589,16 +554,16 @@ function Home() {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              stroke-width="1.5"
+              strokeWidth="1.5"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M9 3l3 2 3-2 2 4-2 1v11a1 1 0 01-1 1H10a1 1 0 01-1-1V8L7 7l2-4z"
               />
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M12 12.5c-1-1-2.5-.3-2.5 1 0 1.3 2.5 2.5 2.5 2.5s2.5-1.2 2.5-2.5c0-1.3-1.5-2-2.5-1z"
               />
             </svg>
@@ -615,11 +580,11 @@ function Home() {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                strokeWidth="2"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M17 8l4 4m0 0l-4 4m4-4H3"
                 />
               </svg>
@@ -637,11 +602,11 @@ function Home() {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              stroke-width="1.5"
+              strokeWidth="1.5"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M8 4L4 7l2 3 2-1v9a1 1 0 001 1h6a1 1 0 001-1V9l2 1 2-3-4-3-2 2h-2L8 4z"
               />
             </svg>
@@ -658,11 +623,11 @@ function Home() {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                strokeWidth="2"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M17 8l4 4m0 0l-4 4m4-4H3"
                 />
               </svg>
@@ -680,16 +645,16 @@ function Home() {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              stroke-width="1.5"
+              strokeWidth="1.5"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M8 3v5l-3 3v3a2 2 0 002 2h3a2 2 0 002-2V3H8z"
               />
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M15 3v5l-3 3v3a2 2 0 002 2h3a2 2 0 002-2V3h-4z"
               />
             </svg>
@@ -706,11 +671,11 @@ function Home() {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                strokeWidth="2"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M17 8l4 4m0 0l-4 4m4-4H3"
                 />
               </svg>

@@ -1,9 +1,11 @@
+import { NavLink } from "react-router";
 import Compare from "../cart_buttons/compare";
 import View from "../cart_buttons/view";
 import WishList from "../cart_buttons/wishList";
 
-function ProductCard(props){
-  const { name, category, price, image } = props;
+function ProductCard({id, name, category, price, image }){
+  
+
   
     return (
         <>
@@ -21,11 +23,11 @@ function ProductCard(props){
             <div
               className="overflow-hidden rounded-t-2xl h-56 w-full flex items-center justify-center p-6"
             >
-              <img
-                src={image}
-                alt={name}
-                className="max-h-full max-w-full object-contain transition-transform duration-500 ease-out group-hover:scale-110"
-              />
+                <img
+        src={image ? `http://127.0.0.1:8000/${image}` : "/placeholder.png"}
+        alt={name}
+        className="w-full h-50  object-contain transition-transform duration-500 ease-out group-hover:scale-110"
+      />
             </div>
 
             {/* <!-- Info --> */}
@@ -40,13 +42,14 @@ function ProductCard(props){
             <div
               className="flex items-center justify-between border-t border-gray-200 px-5 py-4"
             >
-              <span className="font-bold text-slate-900">${ price }</span>
+              <span className="font-bold text-slate-900">Rs { price }</span>
               <button
                 className="text-sm font-semibold text-slate-700 hover:text-yellow-400 cursor-pointer"
               >
                 Add to cart
               </button>
             </div>
+            <NavLink to={`/product_details/${id}`} className="absolute inset-0 z-0" />
           </div>
         </>
     )
