@@ -1,416 +1,558 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 
 import {
   orderPayment,
+  getImage,
 } from "../../api/apiRouter";
 
 const CheckOut = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // ==========================================
-  // GET ORDER AND CART ITEMS
-  // ==========================================
-
   const order = location.state?.order;
+  const checkoutItems = location.state?.items || [];
 
-  const checkoutItems =
-    location.state?.items || [];
+  const [productDetails, setProductDetails] = useState({});
+  const [loadingImages, setLoadingImages] = useState(false);
 
-  const [paymentMethod, setPaymentMethod] =
-    useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [transactionId, setTransactionId] = useState("");
+  const [paymentLoading, setPaymentLoading] = useState(false);
 
-  const [loading, setLoading] =
-    useState(false);
+  /*
+  |--------------------------------------------------------------------------
+  | Load product images
+  |--------------------------------------------------------------------------
+  |
+  | There are two possible ways we reach checkout:
+  |
+  | 1. Cart -> Checkout
+  |    checkoutItems contains the cart information including image.
+  |
+  | 2. My Orders -> Complete Order -> Checkout
+  |    checkoutItems is empty, so we use product_id from order.order_items
+  |    and request the product image from the backend.
+  |
+  */
 
-  // ==========================================
-  // IF NO ORDER WAS PASSED
-  // ==========================================
+  useEffect(() => {
+    const loadProductImages = async () => {
+      if (!order?.order_items) {
+        return;
+      }
 
-  if (!order) {
-    return (
-      <div className="min-h-screen bg-white p-6 md:p-12 text-gray-800">
+      try {
+        setLoadingImages(true);
 
-        <h1 className="text-4xl font-bold mb-12 text-center">
-          Checkout
-        </h1>
+        const details = {};
 
-        <div className="max-w-3xl mx-auto text-center py-20">
+        /*
+         * First use images already available from Cart.
+         */
+        checkoutItems.forEach((item) => {
+          if (item.product_id && item.image) {
+            details[item.product_id] = item.image;
+          }
+        });
 
-          <h2 className="text-2xl font-bold mb-3">
-            No checkout order found
-          </h2>
+        /*
+         * Get images for products that don't already have an image.
+         */
+        for (const item of order.order_items) {
+          if (!item.product_id) {
+            continue;
+          }
 
-          <p className="text-gray-500 mb-8">
-            Please go to your cart and proceed
-            to checkout again.
-          </p>
+          /*
+           * If the image already came from Cart,
+           * don't request it again.
+           */
+          if (details[item.product_id]) {
+            continue;
+          }
 
-          <button
-            onClick={() =>
-              navigate("/cart")
+          try {
+            const response = await getImage(item.product_id);
+
+            const images = response.data?.images || [];
+
+            if (images.length > 0 && images[0]?.image) {
+              details[item.product_id] =
+                `http://127.0.0.1:8000/${images[0].image}`;
+            } else {
+              details[item.product_id] = "/placeholder.png";
             }
-            className="bg-gray-900 text-white px-6 py-3 rounded-md hover:bg-gray-800"
-          >
-            Go to cart
-          </button>
+          } catch (error) {
+            console.error(
+              `Error loading image for product ${item.product_id}:`,
+              error
+            );
 
-        </div>
+            details[item.product_id] = "/placeholder.png";
+          }
+        }
 
-      </div>
-    );
-  }
+        setProductDetails(details);
+      } catch (error) {
+        console.error("Error loading product images:", error);
+      } finally {
+        setLoadingImages(false);
+      }
+    };
 
-  // ==========================================
-  // GET IMAGE FOR EACH ORDER ITEM
-  // ==========================================
+    loadProductImages();
+  }, [order, checkoutItems]);
+
+  /*
+  |--------------------------------------------------------------------------
+  | Get cart information for an order item
+  |--------------------------------------------------------------------------
+  */
 
   const getItemDetails = (orderItem) => {
-
-    const cartItem =
-      checkoutItems.find(
-        (item) =>
-          Number(item.id) ===
-          Number(orderItem.cart_id)
-      );
-
-    return cartItem;
+    return checkoutItems.find(
+      (item) =>
+        Number(item.id) === Number(orderItem.cart_id)
+    );
   };
 
-  // ==========================================
-  // PLACE ORDER / PAYMENT
-  // ==========================================
+  /*
+  |--------------------------------------------------------------------------
+  | Get product image
+  |--------------------------------------------------------------------------
+  */
 
-  const handlePlaceOrder = async () => {
+  const getProductImage = (orderItem) => {
+    const cartItem = getItemDetails(orderItem);
+
+    /*
+     * If checkout came from Cart,
+     * use the image already present in cartItems.
+     */
+    if (cartItem?.image) {
+      return cartItem.image;
+    }
+
+    /*
+     * If checkout came from My Orders,
+     * use the image loaded using product_id.
+     */
+    if (productDetails[orderItem.product_id]) {
+      return productDetails[orderItem.product_id];
+    }
+
+    return "/placeholder.png";
+  };
+
+  /*
+  |--------------------------------------------------------------------------
+  | Payment
+  |--------------------------------------------------------------------------
+  */
+
+  const handlePayment = async () => {
+    if (!order?.order_id) {
+      alert("Order information is missing.");
+      return;
+    }
 
     if (!paymentMethod) {
-      alert(
-        "Please select a payment method."
-      );
+      alert("Please select a payment method.");
       return;
     }
 
     try {
-      setLoading(true);
+      setPaymentLoading(true);
 
       const paymentData = {
         order_id: order.order_id,
-
-        payment_method:
-          paymentMethod,
-
-        transaction_id: null,
+        payment_method: paymentMethod,
+        transaction_id: transactionId || null,
       };
 
-      const response =
-        await orderPayment(
-          paymentData
-        );
-
-      console.log(
-        "Payment successful:",
-        response.data
-      );
+      const response = await orderPayment(paymentData);
 
       alert(
-        "Payment successful. Your order has been placed."
+        response.data?.message ||
+          "Payment completed successfully."
       );
 
-      // Navigate to my orders
-      navigate("/my-orders");
-
+      navigate("/myorder");
     } catch (error) {
-
-      console.error(
-        "Payment error:",
-        error
-      );
+      console.error("Payment error:", error);
 
       alert(
         error.response?.data?.detail ||
           "Payment failed. Please try again."
       );
-
     } finally {
-      setLoading(false);
+      setPaymentLoading(false);
     }
   };
 
-  // ==========================================
-  // UI
-  // ==========================================
+  /*
+  |--------------------------------------------------------------------------
+  | No order
+  |--------------------------------------------------------------------------
+  */
+
+  if (!order) {
+    return (
+      <div className="min-h-screen bg-white p-6 md:p-12 text-gray-800">
+        <div className="max-w-5xl mx-auto">
+          <h1 className="text-4xl font-bold mb-6">
+            Checkout
+          </h1>
+
+          <div className="border border-gray-200 rounded-lg p-8 text-center">
+            <h2 className="text-xl font-semibold mb-3">
+              No order found
+            </h2>
+
+            <p className="text-gray-500 mb-6">
+              Please select an order before proceeding to checkout.
+            </p>
+
+            <button
+              onClick={() => navigate("/myorder")}
+              className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800"
+            >
+              Go to My Orders
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Main checkout page
+  |--------------------------------------------------------------------------
+  */
 
   return (
     <div className="min-h-screen bg-white p-6 md:p-12 text-gray-800 font-sans">
 
-      <h1 className="text-4xl font-bold mb-12 text-center">
-        Checkout
-      </h1>
+      <div className="max-w-6xl mx-auto">
 
-      <div className="max-w-4xl mx-auto">
+        {/* PAGE TITLE */}
+        <h1 className="text-4xl font-bold mb-10">
+          Checkout
+        </h1>
 
-        <div className="border border-gray-200 rounded-lg p-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-          {/* ==========================================
-              ORDER INFORMATION
-          ========================================== */}
+          {/* ============================================================
+              LEFT SIDE
+          ============================================================ */}
 
-          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3 mb-8">
+          <div className="lg:col-span-2 space-y-8">
 
-            <div>
+            {/* ORDER INFORMATION */}
 
-              <h2 className="text-xl font-bold">
-                Your order
+            <div className="border border-gray-200 rounded-lg p-6">
+
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
+
+                <div>
+                  <h2 className="text-2xl font-semibold">
+                    Order #{order.order_id}
+                  </h2>
+
+                  <p className="text-gray-500 mt-1">
+                    Review your order before payment.
+                  </p>
+                </div>
+
+                <span
+                  className={`inline-flex w-fit px-4 py-2 rounded-full text-sm font-medium ${
+                    order.order_status === "completed"
+                      ? "bg-green-100 text-green-700"
+                      : order.order_status === "canceled" ||
+                        order.order_status === "Canceled"
+                      ? "bg-red-100 text-red-700"
+                      : "bg-yellow-100 text-yellow-700"
+                  }`}
+                >
+                  {order.order_status}
+                </span>
+
+              </div>
+
+
+              {/* ========================================================
+                  ORDER ITEMS
+              ======================================================== */}
+
+              <div className="space-y-5">
+
+                {order.order_items &&
+                order.order_items.length > 0 ? (
+
+                  order.order_items.map((item) => {
+
+                    const cartItem = getItemDetails(item);
+
+                    const productImage =
+                      getProductImage(item);
+
+                    const quantity =
+                      Number(item.quantity) || 1;
+
+                    const rate =
+                      Number(item.rate) || 0;
+
+                    const subtotal =
+                      rate * quantity;
+
+                    /*
+                     * Try to get variant information from
+                     * either cart data or order item.
+                     */
+
+                    const variantName =
+                      item.variant_name ||
+                      cartItem?.variant_name ||
+                      null;
+
+                    const variantValue =
+                      item.variant_value ||
+                      cartItem?.variant_value ||
+                      null;
+
+                    return (
+                      <div
+                        key={
+                          item.order_item_id ||
+                          item.id ||
+                          `${item.product_id}-${item.cart_id}`
+                        }
+                        className="flex flex-col sm:flex-row gap-5 border border-gray-200 rounded-lg p-4"
+                      >
+
+                        {/* PRODUCT IMAGE */}
+
+                        <div className="w-full sm:w-28 h-28 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden">
+
+                          <img
+                            src={productImage}
+                            alt={
+                              item.product_name ||
+                              "Product"
+                            }
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src =
+                                "/placeholder.png";
+                            }}
+                          />
+
+                        </div>
+
+
+                        {/* PRODUCT INFORMATION */}
+
+                        <div className="flex-1">
+
+                          <div className="flex flex-col sm:flex-row sm:justify-between gap-3">
+
+                            <div>
+
+                              <h3 className="text-lg font-semibold">
+                                {item.product_name ||
+                                  "Product"}
+                              </h3>
+
+
+                              {/* VARIANT */}
+
+                              {variantName && (
+                                <p className="text-sm text-gray-500 mt-1">
+                                  {variantName}
+
+                                  {variantValue
+                                    ? ` - ${variantValue}`
+                                    : ""}
+                                </p>
+                              )}
+
+
+                              {/* QUANTITY */}
+
+                              <p className="text-sm text-gray-500 mt-2">
+                                Quantity:{" "}
+                                <span className="font-medium text-gray-700">
+                                  {quantity}
+                                </span>
+                              </p>
+
+                            </div>
+
+
+                            {/* PRICE */}
+
+                            <div className="text-left sm:text-right">
+
+                              <p className="text-sm text-gray-500">
+                                Price
+                              </p>
+
+                              <p className="font-semibold">
+                                ${rate.toFixed(2)}
+                              </p>
+
+                              <p className="text-sm text-gray-500 mt-1">
+                                Subtotal
+                              </p>
+
+                              <p className="font-bold">
+                                ${subtotal.toFixed(2)}
+                              </p>
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+                    );
+                  })
+
+                ) : (
+
+                  <div className="text-center py-8 text-gray-500">
+                    No products found for this order.
+                  </div>
+
+                )}
+
+              </div>
+
+              {/* IMAGE LOADING MESSAGE */}
+
+              {loadingImages && (
+                <p className="text-sm text-gray-400 mt-4">
+                  Loading product images...
+                </p>
+              )}
+
+            </div>
+
+
+            {/* ============================================================
+                PAYMENT METHOD
+            ============================================================ */}
+
+            <div className="border border-gray-200 rounded-lg p-6">
+
+              <h2 className="text-2xl font-semibold mb-6">
+                Payment Method
               </h2>
 
-              <p className="text-sm text-gray-500 mt-1">
-                Order #
-                {order.order_id}
-              </p>
 
-            </div>
+              <div className="space-y-4">
 
-            <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-semibold">
-              Pending payment
-            </span>
+                {/* ESEWA */}
 
-          </div>
-
-          {/* ==========================================
-              TABLE HEADER
-          ========================================== */}
-
-          <div className="grid grid-cols-12 gap-4 pb-4 border-b border-gray-200 font-semibold text-sm">
-
-            <div className="col-span-7">
-              Product
-            </div>
-
-            <div className="col-span-2 text-center">
-              Qty
-            </div>
-
-            <div className="col-span-3 text-right">
-              Subtotal
-            </div>
-
-          </div>
-
-          {/* ==========================================
-              ORDER ITEMS
-          ========================================== */}
-
-          {order.order_items?.map(
-            (item) => {
-
-              const cartItem =
-                getItemDetails(item);
-
-              return (
-                <div
-                  key={item.cart_id}
-                  className="grid grid-cols-12 gap-4 py-6 border-b border-dashed border-gray-200 items-center"
+                <label
+                  className={`flex items-center gap-4 border rounded-lg p-4 cursor-pointer transition ${
+                    paymentMethod === "esewa"
+                      ? "border-black bg-gray-50"
+                      : "border-gray-200"
+                  }`}
                 >
 
-                  {/* ==========================================
-                      PRODUCT IMAGE + DETAILS
-                  ========================================== */}
-
-                  <div className="col-span-7">
-
-                    <div className="flex items-center gap-4">
-
-                      {/* PRODUCT IMAGE */}
-
-                      <div className="w-20 h-20 flex-shrink-0 rounded-md overflow-hidden bg-gray-100">
-
-                        <img
-                          src={
-                            cartItem?.image ||
-                            "/placeholder.png"
-                          }
-                          alt={
-                            item.product_name
-                          }
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.src =
-                              "/placeholder.png";
-                          }}
-                        />
-
-                      </div>
-
-                      {/* PRODUCT DETAILS */}
-
-                      <div className="flex flex-col">
-
-                        <span className="font-semibold text-gray-700">
-                          {item.product_name}
-                        </span>
-
-                        {/* VARIANT */}
-
-                        {cartItem?.variant_name && (
-                          <span className="text-xs text-gray-500 mt-1">
-
-                            {cartItem.variant_name}
-
-                            {cartItem.variant_value
-                              ? ` - ${cartItem.variant_value}`
-                              : ""}
-
-                          </span>
-                        )}
-
-                        {/* RATE */}
-
-                        <span className="text-sm text-gray-500 mt-1">
-                          Rate: Rs{" "}
-                          {Number(
-                            item.rate
-                          ).toFixed(2)}
-                        </span>
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                  {/* ==========================================
-                      QUANTITY
-                  ========================================== */}
-
-                  <div className="col-span-2 text-center text-gray-600">
-                    {item.quantity}
-                  </div>
-
-                  {/* ==========================================
-                      SUBTOTAL
-                  ========================================== */}
-
-                  <div className="col-span-3 text-right text-gray-600">
-
-                    Rs{" "}
-                    {(
-                      Number(
-                        item.rate
-                      ) *
-                      Number(
-                        item.quantity
+                  <input
+                    type="radio"
+                    name="payment_method"
+                    value="esewa"
+                    checked={
+                      paymentMethod === "esewa"
+                    }
+                    onChange={(e) =>
+                      setPaymentMethod(
+                        e.target.value
                       )
-                    ).toFixed(2)}
-
-                  </div>
-
-                </div>
-              );
-            }
-          )}
-
-          {/* ==========================================
-              TOTAL
-          ========================================== */}
-
-          <div className="py-6 border-b border-dashed border-gray-200">
-
-            <div className="flex justify-between mb-4 text-gray-600 font-semibold">
-
-              <span>
-                Subtotal
-              </span>
-
-              <span>
-                Rs{" "}
-                {Number(
-                  order.amount || 0
-                ).toFixed(2)}
-              </span>
-
-            </div>
-
-            <div className="flex justify-between text-gray-900 font-bold text-lg">
-
-              <span>
-                Total
-              </span>
-
-              <span>
-                Rs{" "}
-                {Number(
-                  order.amount || 0
-                ).toFixed(2)}
-              </span>
-
-            </div>
-
-          </div>
-
-          {/* ==========================================
-              PAYMENT METHOD
-          ========================================== */}
-
-          <div className="py-6 border-b border-dashed border-gray-200">
-
-            <label
-              htmlFor="paymentMethod"
-              className="block text-sm font-bold text-gray-700 mb-4"
-            >
-              Payment method{" "}
-
-              <span className="text-red-500">
-                *
-              </span>
-            </label>
-
-            <div className="relative">
-
-              <select
-                id="paymentMethod"
-                value={paymentMethod}
-                onChange={(e) =>
-                  setPaymentMethod(
-                    e.target.value
-                  )
-                }
-                className="w-full bg-gray-50 border border-gray-200 rounded-md px-4 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-gray-200 focus:bg-white transition-colors font-medium"
-              >
-
-                <option value="">
-                  Select a payment method
-                </option>
-
-                <option value="esewa">
-                  eSewa
-                </option>
-
-                <option value="khalti">
-                  Khalti
-                </option>
-
-              </select>
-
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-
-                <svg
-                  width="10"
-                  height="6"
-                  viewBox="0 0 10 6"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-
-                  <path
-                    d="M1 1L5 5L9 1"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    }
                   />
 
-                </svg>
+                  <div>
+                    <p className="font-semibold">
+                      eSewa
+                    </p>
+
+                    <p className="text-sm text-gray-500">
+                      Pay using eSewa
+                    </p>
+                  </div>
+
+                </label>
+
+
+                {/* KHALTI */}
+
+                <label
+                  className={`flex items-center gap-4 border rounded-lg p-4 cursor-pointer transition ${
+                    paymentMethod === "khalti"
+                      ? "border-black bg-gray-50"
+                      : "border-gray-200"
+                  }`}
+                >
+
+                  <input
+                    type="radio"
+                    name="payment_method"
+                    value="khalti"
+                    checked={
+                      paymentMethod === "khalti"
+                    }
+                    onChange={(e) =>
+                      setPaymentMethod(
+                        e.target.value
+                      )
+                    }
+                  />
+
+                  <div>
+                    <p className="font-semibold">
+                      Khalti
+                    </p>
+
+                    <p className="text-sm text-gray-500">
+                      Pay using Khalti
+                    </p>
+                  </div>
+
+                </label>
+
+              </div>
+
+
+              {/* TRANSACTION ID */}
+
+              <div className="mt-6">
+
+                <label className="block text-sm font-medium mb-2">
+                  Transaction ID
+                  <span className="text-gray-400 ml-1">
+                    (optional)
+                  </span>
+                </label>
+
+                <input
+                  type="text"
+                  value={transactionId}
+                  onChange={(e) =>
+                    setTransactionId(
+                      e.target.value
+                    )
+                  }
+                  placeholder="Enter transaction ID"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-black"
+                />
 
               </div>
 
@@ -418,33 +560,131 @@ const CheckOut = () => {
 
           </div>
 
-          {/* ==========================================
-              PLACE ORDER
-          ========================================== */}
 
-          <div className="pt-6">
+          {/* ============================================================
+              RIGHT SIDE - ORDER SUMMARY
+          ============================================================ */}
 
-            <button
-              onClick={
-                handlePlaceOrder
-              }
-              disabled={
-                !paymentMethod ||
-                loading
-              }
-              className={`w-full font-bold py-4 rounded-md transition-colors text-center focus:outline-none ${
-                !paymentMethod ||
-                loading
-                  ? "bg-gray-400 text-white cursor-not-allowed"
-                  : "bg-gray-900 text-white hover:bg-gray-800"
-              }`}
-            >
+          <div>
 
-              {loading
-                ? "Processing payment..."
-                : "Place order"}
+            <div className="border border-gray-200 rounded-lg p-6 sticky top-6">
 
-            </button>
+              <h2 className="text-2xl font-semibold mb-6">
+                Order Summary
+              </h2>
+
+
+              {/* ORDER ID */}
+
+              <div className="flex justify-between py-3 border-b border-gray-100">
+
+                <span className="text-gray-500">
+                  Order ID
+                </span>
+
+                <span className="font-medium">
+                  #{order.order_id}
+                </span>
+
+              </div>
+
+
+              {/* ITEMS */}
+
+              <div className="flex justify-between py-3 border-b border-gray-100">
+
+                <span className="text-gray-500">
+                  Items
+                </span>
+
+                <span className="font-medium">
+                  {order.order_items?.length || 0}
+                </span>
+
+              </div>
+
+
+              {/* STATUS */}
+
+              <div className="flex justify-between py-3 border-b border-gray-100">
+
+                <span className="text-gray-500">
+                  Status
+                </span>
+
+                <span className="font-medium capitalize">
+                  {order.order_status}
+                </span>
+
+              </div>
+
+
+              {/* TOTAL */}
+
+              <div className="flex justify-between py-5">
+
+                <span className="text-xl font-semibold">
+                  Total
+                </span>
+
+                <span className="text-xl font-bold">
+                  $
+                  {Number(
+                    order.amount || 0
+                  ).toFixed(2)}
+                </span>
+
+              </div>
+
+
+              {/* PAYMENT BUTTON */}
+
+              <button
+                onClick={handlePayment}
+                disabled={
+                  paymentLoading ||
+                  order.order_status ===
+                    "completed" ||
+                  order.order_status ===
+                    "canceled" ||
+                  order.order_status ===
+                    "Canceled"
+                }
+                className={`w-full py-3 rounded-lg font-semibold transition ${
+                  paymentLoading ||
+                  order.order_status ===
+                    "completed" ||
+                  order.order_status ===
+                    "canceled" ||
+                  order.order_status ===
+                    "Canceled"
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-black text-white hover:bg-gray-800"
+                }`}
+              >
+
+                {paymentLoading
+                  ? "Processing..."
+                  : order.order_status ===
+                    "completed"
+                  ? "Order Completed"
+                  : "Complete Payment"}
+
+              </button>
+
+
+              {/* BACK BUTTON */}
+
+              <button
+                onClick={() =>
+                  navigate("/myorder")
+                }
+                className="w-full mt-3 py-3 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition"
+              >
+                My Orders
+              </button>
+
+            </div>
 
           </div>
 
