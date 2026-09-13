@@ -7,12 +7,13 @@ import Shop from './pages/shop/index.jsx'
 import News from './pages/news/index.jsx'
 import About from './pages/about/index.jsx'
 import Contact from './pages/contact/index.jsx'
-import { BrowserRouter, createBrowserRouter } from 'react-router';
+import { createBrowserRouter } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
-import Header from './components/header/index.jsx'
+
 import LoginForm from './components/user/LoginForm.jsx'
 import ProductDetails from './pages/shop/product/productDetails.jsx'
 import Cart from './components/cart/Cart.jsx'
+import CheckOut from './components/order/CheckOut.jsx'
 
 const router = createBrowserRouter([
   
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
      {
       path: "/cart",
       element: <><Cart/></>
+    },
+    {
+       path: "/checkout",
+      element: <><CheckOut/></>
     },
 
       ]
