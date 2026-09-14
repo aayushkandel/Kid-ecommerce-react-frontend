@@ -1,4 +1,5 @@
 
+import { NavLink } from "react-router";
 import { getProduct,getImage } from "../../api/apiRouter";
 import Compare from "../../components/cart_buttons/compare";
 import View from "../../components/cart_buttons/view";
@@ -63,10 +64,8 @@ function Home() {
             </p>
 
             <div className="mt-10 flex items-center gap-4">
-              <a
-                href="#"
-                className="inline-flex items-center gap-2 bg-slate-900 text-white font-semibold px-6 py-4 rounded-lg hover:bg-yellow-500 transition-colors duration-200"
-              >
+              <NavLink to="/shop"  state={{ scrollToProduct: true }}>
+              <div className="inline-flex items-center gap-2 bg-slate-900 text-white font-semibold px-6 py-4 rounded-lg hover:bg-yellow-500 transition-colors duration-200">
                 Explore Collection
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -81,23 +80,10 @@ function Home() {
                     strokeLinejoin="round"
                     d="M7 17L17 7M17 7H7M17 7V17"
                   />
-                </svg>
-              </a>
+                </svg></div>
+              </NavLink>
 
-              <a
-                href="#"
-                className="inline-flex items-center gap-2 border border-gray-200 text-slate-900 font-semibold px-6 py-4 rounded-lg hover:bg-yellow-500 transition-colors duration-200"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-3.5 w-3.5"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-                Promo Video
-              </a>
+             
             </div>
           </div>
 
@@ -372,8 +358,9 @@ function Home() {
         {/* <!-- Header --> */}
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-4xl font-black text-slate-900">Featured Products</h2>
-          <a
-            href="#"
+         <NavLink to="/shop"  state={{ scrollToProduct: true }}>
+          <div
+            
             className="inline-flex items-center gap-2 border border-gray-200 text-slate-900 font-semibold text-sm px-5 py-3.5 rounded-lg hover:border-gray-400 transition-colors duration-200"
           >
             View All Products
@@ -391,7 +378,7 @@ function Home() {
                 d="M7 17L17 7M17 7H7M17 7V17"
               />
             </svg>
-          </a>
+          </div></NavLink>
         </div>
 
         {/* <!-- Product grid --> */}

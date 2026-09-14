@@ -1,9 +1,25 @@
-import React from 'react'
+import React,{useState,useEffect,useRef} from 'react'
 import Hero from './hero'
 import Product from './product/product-list'
 import Filter from './filter/filter'
+import { useLocation } from "react-router";
 
 const Shop = () => {
+
+  const location = useLocation();
+
+  const productRef = useRef(null);
+
+  useEffect(() => {
+    if (location.state?.scrollToProduct) {
+      productRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+
+      });
+    }
+  }, [location.state]);
+
   return (
     <>
      <Hero/>
@@ -13,7 +29,11 @@ const Shop = () => {
  
     {/* <!-- LEFT: products --> */}
     
- <Product/>
+<div ref={productRef}
+style={{ scrollMarginTop: "4rem" }}
+>
+        <Product />
+      </div>  
     {/* <!-- RIGHT: filters sidebar --> */}
    <Filter/>
  
