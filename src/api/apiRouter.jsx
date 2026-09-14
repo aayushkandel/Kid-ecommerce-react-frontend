@@ -35,6 +35,16 @@ export const getProductRate=(id)=>{
 }
 
 
+// Product Categories
+
+//get product category
+
+export const getcategory=()=>{
+    return api.get("categories/all_category")
+}
+
+
+
 //CARTS
 
 //create cart
