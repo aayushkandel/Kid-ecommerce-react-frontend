@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 
-import {
-  orderPayment,
-  getImage,
-} from "../../api/apiRouter";
+import {orderPayment,getImage,} from "../../api/apiRouter";
 
 const CheckOut = () => {
   const location = useLocation();

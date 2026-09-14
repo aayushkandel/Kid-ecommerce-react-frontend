@@ -1,12 +1,15 @@
-
 import { NavLink } from "react-router";
 import React, { useState, useEffect } from "react";
 import LoginForm from "../user/LoginForm";
 import RegisterForm from "../user/RegisterForm";
 
+import { getCart } from "../../api/apiRouter";
+
 function Header(props) {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+
+  
 
   const [isLoggedIn, setIsLoggedIn] = useState(
     !!localStorage.getItem("token")
@@ -16,6 +19,64 @@ function Header(props) {
     localStorage.getItem("username") || ""
   );
 
+  // ============================
+  // CART STATE
+  // ============================
+
+  const [cartCount, setCartCount] = useState(0);
+  const [cartTotal, setCartTotal] = useState(0);
+
+  // ============================
+  // FETCH CART TOTAL AND COUNT
+  // ============================
+
+  const fetchCartSummary = async () => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    setCartCount(0);
+    setCartTotal(0);
+    return;
+  }
+
+  try {
+    const response = await getCart();
+    const carts = response.data || [];
+
+    // Number of cart records, not total quantity
+    setCartCount(carts.length);
+
+    const total = carts.reduce((sum, item) => {
+      const price = Number(item.price || 0);
+      const quantity = Number(item.quantity || 0);
+
+      return sum + price * quantity;
+    }, 0);
+
+    setCartTotal(total);
+  } catch (error) {
+    console.error("Error fetching cart summary:", error);
+  }
+};
+
+useEffect(() => {
+  fetchCartSummary();
+
+  const handleCartUpdated = () => {
+    fetchCartSummary();
+  };
+
+  window.addEventListener("cartUpdated", handleCartUpdated);
+
+  return () => {
+    window.removeEventListener("cartUpdated", handleCartUpdated);
+  };
+}, []);
+
+  // ============================
+  // LOGIN CHECK
+  // ============================
+
   useEffect(() => {
     const checkLogin = () => {
       const token = localStorage.getItem("token");
@@ -23,6 +84,8 @@ function Header(props) {
 
       setIsLoggedIn(!!token);
       setUsername(storedUsername || "");
+
+      fetchCartSummary();
     };
 
     window.addEventListener("storage", checkLogin);
@@ -32,6 +95,34 @@ function Header(props) {
     };
   }, []);
 
+  // ============================
+  // FETCH CART WHEN HEADER LOADS
+  // ============================
+
+  useEffect(() => {
+    fetchCartSummary();
+  }, []);
+
+  // ============================
+  // LISTEN FOR CART UPDATES
+  // ============================
+
+  useEffect(() => {
+    const updateCartSummary = () => {
+      fetchCartSummary();
+    };
+
+    window.addEventListener("cartUpdated", updateCartSummary);
+
+    return () => {
+      window.removeEventListener("cartUpdated", updateCartSummary);
+    };
+  }, []);
+
+  // ============================
+  // LOGOUT
+  // ============================
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
@@ -39,8 +130,16 @@ function Header(props) {
     setIsLoggedIn(false);
     setUsername("");
 
+    // Clear cart information in header
+    setCartCount(0);
+    setCartTotal(0);
+
     console.log("User logged out");
   };
+
+  // ============================
+  // LOGIN SUCCESS
+  // ============================
 
   const handleLoginSuccess = () => {
     const token = localStorage.getItem("token");
@@ -48,10 +147,17 @@ function Header(props) {
 
     setIsLoggedIn(!!token);
     setUsername(storedUsername || "");
+
+    // Fetch cart after login
+    fetchCartSummary();
   };
 
   return (
     <>
+      {/* ============================
+          TOP HEADER
+      ============================ */}
+
       <div className="w-full h-20 flex justify-between">
 
         {/* Logo */}
@@ -137,7 +243,11 @@ function Header(props) {
 
       </div>
 
-      {/* Navbar */}
+
+      {/* ============================
+          NAVBAR
+      ============================ */}
+
       <div className="flex w-full h-20">
 
         {/* Main nav */}
@@ -199,14 +309,17 @@ function Header(props) {
 
         </div>
 
-        {/* Right nav */}
-        <div className="flex justify-end gap-10 items-center w-1/2">
 
-        
+        {/* ============================
+            RIGHT NAV
+        ============================ */}
+
+        <div className="flex justify-end gap-10 items-center w-1/2">
 
           {/* Compare */}
           <a href="#">
             <div className="flex items-center gap-3 font-semibold text-gray-700 hover:text-yellow-400 transition-colors duration-100">
+
               <svg
                 className="ct-icon"
                 aria-hidden="true"
@@ -215,16 +328,18 @@ function Header(props) {
                 viewBox="0 0 15 15"
                 fill="currentColor"
               >
-                <path d="M7.5 6c-.1.5-.2 1-.3 1.4 0 .6-.1 1.3-.3 2-.2.7-.5 1.4-1 1.9-.5.6-1.3.9-2.2.9H0v-1.4h3.7c.6 0 .9-.2 1.2-.5.3-.3.5-.7.7-1.3.1-.5.2-1 .3-1.6v-.3c0-.5.1-1 .3-1.5.2-.7.5-1.4 1-1.9.5-.6 1.3-.9 2.2-.9h3l-1.6-1.6 1-1L15 3.5l-3.3 3.3-1-1 1.6-1.6h-3c-.6 0-.9.2-1.2.5-.2.3-.5.7-.6 1.3zM4.9 4.7c.2-.4.4-.9.7-1.3-.5-.4-1.1-.6-1.9-.6H0v1.4h3.7c.6 0 1 .2 1.2.5zm5.8 4.5 1.6 1.6h-3c-.6 0-1.2-.2-1.2-.5-.2.4-.4.9-.6 1.3.5.4 1.1.6 1.8.6h3l-1.6 1.6 1 1 3.3-3.3-3.3-3.3-1 1z" />
+                <path d="M7.5 6c-.1.5-.2 1-.3 1.4 0 .6-.1 1.3-.3 2-.2.7-.5 1.4-1 1.9-.5.6-1.3.9-2.2.9H0v-1.4h3.7c.6 0 .9-.2 1.2-.5.3-.3.5-.7.7-1.3.1-.5.2-1 .3-1.6v-.3c0-.5.1-1 .3-1.5.2-.7.5-1.4 1-1.9.5-.6 1.3-.9 2.2-.9h3l-1.6-1.6 1-1L15 3.5l-3.3 3.3-1-1 1.6-1.6h-3c-.6 0-1.2.2-1.2.5-.2.4-.4.9-.6 1.3.5.4 1.1.6 1.8.6h3l-1.6 1.6 1 1z" />
               </svg>
 
               COMPARE
             </div>
           </a>
 
+
           {/* Wishlist */}
           <a href="#">
             <div className="flex items-center gap-3 font-semibold text-gray-700 hover:text-yellow-400 transition-colors duration-100">
+
               <svg
                 className="ct-icon"
                 width="15"
@@ -239,30 +354,60 @@ function Header(props) {
             </div>
           </a>
 
-          {/* Cart */}
-          <a href="#">
-            <div className="flex items-center gap-3 font-semibold text-gray-700 hover:text-yellow-400 transition-colors duration-100">
-              <svg
-                aria-hidden="true"
-                width="15"
-                height="15"
-                viewBox="0 0 15 15"
-                fill="currentColor"
-              >
-                <path d="M14.1,1.6C14,0.7,13.3,0,12.4,0H2.7C1.7,0,1,0.7,0.9,1.6L0.1,13.1c0,0.5,0.1,1,0.5,1.3C0.9,14.8,1.3,15,1.8,15h11.4c0.5,0,0.9-0.2,1.3-0.6c0.3-0.4,0.5-0.8,0.5-1.3L14.1,1.6z" />
-              </svg>
 
-              $0.00
+          {/* ============================
+              CART
+          ============================ */}
+
+          <NavLink to="/cart">
+
+            <div className="flex items-center gap-3 font-semibold text-gray-700 hover:text-yellow-400 transition-colors duration-100 relative">
+
+              {/* Cart Icon + Badge */}
+              <div className="relative">
+
+                <svg
+                  aria-hidden="true"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 15 15"
+                  fill="currentColor"
+                >
+                  <path d="M14.1,1.6C14,0.7,13.3,0,12.4,0H2.7C1.7,0,1,0.7,0.9,1.6L0.1,13.1c0,0.5,0.1,1,0.5,1.3C0.9,14.8,1.3,15,1.8,15h11.4c0.5,0,0.9-0.2,1.3-0.6c0.3-0.4,0.5-0.8,0.5-1.3L14.1,1.6z" />
+                </svg>
+
+
+                {/* CART NOTIFICATION BADGE */}
+
+                {cartCount > 0 && (
+                  <span className="absolute -top-3 -right-3 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 shadow-md">
+
+                    {cartCount}
+
+                  </span>
+                )}
+
+              </div>
+
+
+              {/* CART TOTAL */}
+
+              Rs {cartTotal.toFixed(2)}
+
             </div>
-          </a>
 
-            {/* Login / Profile + Logout */}
+          </NavLink>
+
+
+          {/* Login / Profile + Logout */}
+
           {!isLoggedIn ? (
 
             <div
               onClick={() => setIsLoginOpen(true)}
               className="flex items-center gap-3 font-semibold text-gray-700 hover:text-yellow-400 transition-colors duration-100 cursor-pointer"
             >
+
               <svg
                 className="ct-icon"
                 aria-hidden="true"
@@ -272,18 +417,19 @@ function Header(props) {
                 fill="currentColor"
               >
                 <path
-                  d="M10.5,9h-6c-2.1,0-3.8,1.7-3.8,3.8v1.5c0,0.4,0.3,0.8,0.8,0.8s.8-0.3.8-0.8v-1.5c0-1.2,1-2.2,2.2-2.2h6c1.2,0,2.2,1,2.2,2.2v1.5c0,0.4,0.3,0.8,0.8,0.8s.8-0.3.8-0.8v-1.5C14.2,10.7,12.6,9,10.5,9zM7.5,7C9.4,7,11,5.4,11,3.5S9.4,0,7.5,0S4,1.6,4,3.5S5.6,7,7.5,7zM7.5,1.5c1.1,0,2,0.9,2,2s-.9,2-2,2s-2-.9-2-2s.9-2,2-2z"
+                  d="M10.5,9h-6c-2.1,0-3.8,1.7-3.8,3.8v1.5c0,0.4.3.8.8.8s.8-.3.8-.8v-1.5c0-1.2,1-2.2,2.2-2.2h6c1.2,0,2.2,1,2.2,2.2v1.5c0,0.4.3.8.8.8s.8-.3.8-.8v-1.5C14.2,10.7,12.6,9,10.5,9zM7.5,7C9.4,7,11,5.4,11,3.5S9.4,0,7.5,0S4,1.6,4,3.5S5.6,7,7.5,7zM7.5,1.5c1.1,0,2,0.9,2,2s-.9,2-2,2s-2-.9-2-2s.9-2,2-2z"
                 />
               </svg>
 
               LOGIN
+
             </div>
 
           ) : (
 
             <div className="flex items-center gap-4">
 
-               {/* Logout */}
+              {/* Logout */}
               <div
                 onClick={handleLogout}
                 className="font-semibold text-gray-700 hover:text-yellow-400 transition-colors duration-100 cursor-pointer"
@@ -299,16 +445,17 @@ function Header(props) {
                 {username ? username.charAt(0) : "U"}
               </div>
 
-             
-
             </div>
 
           )}
 
         </div>
+
       </div>
 
+
       {/* Login Form */}
+
       <LoginForm
         isOpen={isLoginOpen}
         setIsOpen={setIsLoginOpen}
@@ -319,7 +466,9 @@ function Header(props) {
         onLoginSuccess={handleLoginSuccess}
       />
 
+
       {/* Register Form */}
+
       <RegisterForm
         isOpen={isRegisterOpen}
         setIsOpen={setIsRegisterOpen}
@@ -328,9 +477,9 @@ function Header(props) {
           setIsLoginOpen(true);
         }}
       />
+
     </>
   );
 }
 
 export default Header;
-
