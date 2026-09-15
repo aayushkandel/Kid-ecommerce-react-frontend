@@ -385,11 +385,18 @@ function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           
 
-         {
-          products.map(({id, name, category, price, image}) => (
-            <ProductCard key={id} id={id} name={name} category={category} price={price} image={image} />
-          ))
-         }
+        {
+  products.slice(0, 8).map(({id, name, category, price, image}) => (
+    <ProductCard 
+      key={id} 
+      id={id} 
+      name={name} 
+      category={category} 
+      price={price} 
+      image={image} 
+    />
+  ))
+}
           
         </div>
       </section>

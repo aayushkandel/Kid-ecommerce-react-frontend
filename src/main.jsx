@@ -15,6 +15,7 @@ import ProductDetails from './pages/shop/product/productDetails.jsx'
 import Cart from './components/cart/Cart.jsx'
 import CheckOut from './components/order/CheckOut.jsx'
 import MyOrder from './components/user/MyOrder.jsx'
+import SearchPage from './components/search/SearchPage.jsx'
 
 const router = createBrowserRouter([
   
@@ -61,6 +62,11 @@ const router = createBrowserRouter([
     {
        path: "/myorder",
       element: <><MyOrder/></>
+    },
+
+     {
+       path: "/search",
+      element: <><SearchPage/></>
     },
 
       ]
