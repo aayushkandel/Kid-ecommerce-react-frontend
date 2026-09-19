@@ -127,7 +127,7 @@ function Footer () {
     <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
       <div className="max-w-md">
         <div className="flex items-center gap-2">
-          <img src="src/assets/logo.svg" alt="" className="h-25 w-25" />
+          <img src="/assets/logo.svg" alt="" className="h-25 w-25" />
           
         </div>
         <p className="mt-4 text-slate-500">

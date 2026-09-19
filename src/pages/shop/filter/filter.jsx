@@ -39,7 +39,7 @@ const Filter = ({
 
             <li className="flex items-center gap-4">
               <img
-                src="src/assets/product-image-13.webp"
+                src="/assets/product-image-13.webp"
                 alt="Torquent Oduis"
                 className="h-16 w-16 rounded-lg object-cover"
               />
@@ -57,7 +57,7 @@ const Filter = ({
 
             <li className="flex items-center gap-4">
               <img
-                src="src/assets/product-image-14.webp"
+                src="/assets/product-image-14.webp"
                 alt="Justo Finibus"
                 className="h-16 w-16 rounded-lg object-cover"
               />
@@ -75,7 +75,7 @@ const Filter = ({
 
             <li className="flex items-center gap-4">
               <img
-                src="src/assets/product-image-15.webp"
+                src="/assets/product-image-15.webp"
                 alt="Mattis Aliquam"
                 className="h-16 w-16 rounded-lg object-cover"
               />
@@ -96,7 +96,7 @@ const Filter = ({
 
             <li className="flex items-center gap-4">
               <img
-                src="src/assets/product-image-16.webp"
+                src="/assets/product-image-16.webp"
                 alt="Montes Dictum"
                 className="h-16 w-16 rounded-lg object-cover"
               />
@@ -155,7 +155,7 @@ const Filter = ({
           </div>
 
           <img
-            src="src/assets/boy-child.webp"
+            src="/assets/boy-child.webp"
             alt="New collection"
             className="absolute bottom-0 right-3 h-56 w-auto object-contain"
           />

@@ -239,7 +239,7 @@ function ProductCard({
           <img
             src={
               image
-                ? `http://127.0.0.1:8000/${image}`
+                ? `/api/${image}`
                 : "/placeholder.png"
             }
             alt={name}

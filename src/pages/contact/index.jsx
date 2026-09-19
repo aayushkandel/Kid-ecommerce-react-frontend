@@ -7,7 +7,7 @@ function Contact() {
           <div>
             <div class="rounded-3xl overflow-hidden bg-amber-200 h-[520px]">
               <img
-                src="src/assets/contact-us-image.webp"
+                src="/assets/contact-us-image.webp"
                 alt="Child pointing"
                 class="  w-full h-full object-cover object-top"
               />

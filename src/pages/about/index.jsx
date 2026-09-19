@@ -37,17 +37,17 @@ function About() {
         {/* <!-- 3-image collage --> */}
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-16">
           <img
-            src="src/assets/about-us-image-1.webp"
+            src="/assets/about-us-image-1.webp"
             alt="Kids sweater display"
             class="w-full h-96 sm:mt-24 rounded-2xl object-cover"
           />
           <img
-            src="src/assets/about-us-image-2.webp"
+            src="/assets/about-us-image-2.webp"
             alt="Nursery decor"
             class="w-full h-96 rounded-2xl object-cover"
           />
           <img
-            src="src/assets/about-us-image-3.webp"
+            src="/assets/about-us-image-3.webp"
             alt="Knit romper on hanger"
             class="w-full h-96 sm:mt-24 rounded-2xl object-cover"
           />
@@ -144,7 +144,7 @@ function About() {
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
           <div class="rounded-3xl overflow-hidden bg-amber-200 h-[520px]">
             <img
-              src="src/assets/about-us-image-4.webp"
+              src="/assets/about-us-image-4.webp"
               alt="Child holding shopping bag"
               class="w-full h-full object-cover object-top"
             />
@@ -223,7 +223,7 @@ function About() {
           </button>
 
           <img
-            src="src/assets/child-1.webp"
+            src="/assets/child-1.webp"
             alt="Samantha Jackson's child"
             class="h-16 w-16 rounded-full object-cover mx-auto mb-6"
           />

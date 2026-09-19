@@ -95,7 +95,7 @@ function Home() {
                 className="flex-1 rounded-3xl overflow-hidden bg-amber-200 mt-10 mb-5 `aspect-3/4`"
               >
                 <img
-                  src="src/assets/boy-child.webp"
+                  src="/assets/boy-child.webp"
                   alt="Child in yellow"
                   className="w-full h-full object-cover"
                 />
@@ -106,7 +106,7 @@ function Home() {
                 className="flex-1 rounded-3xl overflow-hidden bg-violet-100 mb-20 `aspect-3/4`"
               >
                 <img
-                  src="src/assets/girl-child.webp"
+                  src="/assets/girl-child.webp"
                   alt="Child in striped shirt"
                   className="w-full h-full object-cover"
                 />
@@ -170,7 +170,7 @@ function Home() {
             className="lg:col-span-2 relative rounded-3xl overflow-hidden min-h-105 group"
           >
             <img
-              src="src/assets/dragon.webp"
+              src="/assets/dragon.webp"
               alt="New toys collection"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
             />
@@ -253,7 +253,7 @@ function Home() {
                 </svg>
               </a>
               <img
-                src="src/assets/baby-shoe.webp"
+                src="/assets/baby-shoe.webp"
                 alt="Shoes"
                 className="absolute bottom-9 right-9 w-32 h-auto object-contain transition-transform duration-300 group-hover:scale-110"
               />
@@ -296,7 +296,7 @@ function Home() {
                 </svg>
               </a>
               <img
-                src="src/assets/orange-hat.webp"
+                src="/assets/orange-hat.webp"
                 alt="Hat"
                 className="absolute bottom-9 right-9 w-24 h-auto object-contain transition-transform duration-300 group-hover:scale-110"
               />
@@ -406,22 +406,22 @@ function Home() {
 
         <div className="flex justify-center -space-x-4 mb-6">
           <img
-            src="src/assets/child-1.webp"
+            src="/assets/child-1.webp"
             alt="Customer"
             className="h-16 w-16 rounded-full border-4 border-white object-cover"
           />
           <img
-            src="src/assets/child-2.webp"
+            src="/assets/child-2.webp"
             alt="Customer"
             className="h-16 w-16 rounded-full border-4 border-white object-cover"
           />
           <img
-            src="src/assets/child-3.webp"
+            src="/assets/child-3.webp"
             alt="Customer"
             className="h-16 w-16 rounded-full border-4 border-white object-cover"
           />
           <img
-            src="src/assets/child-4.webp"
+            src="/assets/child-4.webp"
             alt="Customer"
             className="h-16 w-16 rounded-full border-4 border-white object-cover"
           />
@@ -687,7 +687,7 @@ function Home() {
           {/* <!-- Image --> */}
           <div className="h-120 lg:h-[90]">
             <img
-              src="src/assets/subscribe-image.webp"
+              src="/assets/subscribe-image.webp"
               alt="Child in yellow sweater"
               className="w-2/3 ml-20 h-full object-cover object-top"
             />

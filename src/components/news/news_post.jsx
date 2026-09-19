@@ -6,7 +6,7 @@ function NewsPost() {
         {/* <!-- Post 1 --> */}
         <article class="grid grid-cols-1 sm:grid-cols-[380px_1fr] gap-8 py-8 first:pt-0 group">
           <img
-            src="src/assets/blog-image-1.webp"
+            src="/assets/blog-image-1.webp"
             alt="Molestie Congue Adultrices"
             class="w-full h-64 sm:h-full rounded-2xl object-cover transition-transform duration-300 group-hover:scale-110"
           />
@@ -19,7 +19,7 @@ function NewsPost() {
             </h2>
             <div class="flex items-center gap-2 mt-4 text-xs font-semibold text-slate-500 tracking-wide">
               <img
-                src="src/assets/blog-image-1.webp"
+                src="/assets/blog-image-1.webp"
                 alt="Michael"
                 class="h-6 w-6 rounded-full object-cover"
               />
@@ -37,7 +37,7 @@ function NewsPost() {
         {/* <!-- Post 2 --> */}
         <article class="grid grid-cols-1 sm:grid-cols-[380px_1fr] gap-8 py-8 group">
           <img
-            src="src/assets/blog-image-2.webp"
+            src="/assets/blog-image-2.webp"
             alt="Bibendum Magnis Phasellus"
             class="w-full h-64 sm:h-full rounded-2xl object-cover transition-transform duration-300 group-hover:scale-110"
           />
@@ -50,7 +50,7 @@ function NewsPost() {
             </h2>
             <div class="flex items-center gap-2 mt-4 text-xs font-semibold text-slate-500 tracking-wide">
               <img
-                src="src/assets/blog-image-2.webp"
+                src="/assets/blog-image-2.webp"
                 alt="Michael"
                 class="h-6 w-6 rounded-full object-cover"
               />
@@ -68,7 +68,7 @@ function NewsPost() {
         {/* <!-- Post 3 --> */}
         <article class="grid grid-cols-1 sm:grid-cols-[380px_1fr] gap-8 py-8 group">
           <img
-            src="src/assets/blog-image-3-.webp"
+            src="/assets/blog-image-3-.webp"
             alt="Pellentesque Rutrum Habitasse"
             class="w-full h-64 sm:h-full rounded-2xl object-cover transition-transform duration-300 group-hover:scale-110"
           />
@@ -81,7 +81,7 @@ function NewsPost() {
             </h2>
             <div class="flex items-center gap-2 mt-4 text-xs font-semibold text-slate-500 tracking-wide">
               <img
-                src="src/assets/blog-image-3-.webp"
+                src="/assets/blog-image-3-.webp"
                 alt="Michael"
                 class="h-6 w-6 rounded-full object-cover"
               />
@@ -99,7 +99,7 @@ function NewsPost() {
         {/* <!-- Post 4 --> */}
         <article class="grid grid-cols-1 sm:grid-cols-[380px_1fr] gap-8 py-8 group">
           <img
-            src="src/assets/blog-image-4.webp"
+            src="/assets/blog-image-4.webp"
             alt="Velit Sollicitudin Habitasse"
             class="w-full h-64 sm:h-full rounded-2xl object-cover transition-transform duration-300 group-hover:scale-110"
           />
@@ -112,7 +112,7 @@ function NewsPost() {
             </h2>
             <div class="flex items-center gap-2 mt-4 text-xs font-semibold text-slate-500 tracking-wide">
               <img
-                src="src/assets/blog-image-4.webp"
+                src="/assets/blog-image-4.webp"
                 alt="Michael"
                 class="h-6 w-6 rounded-full object-cover"
               />
@@ -130,7 +130,7 @@ function NewsPost() {
         {/* <!-- Post 5 --> */}
         <article class="grid grid-cols-1 sm:grid-cols-[380px_1fr] gap-8 py-8 group">
           <img
-            src="src/assets/blog-image-5.webp"
+            src="/assets/blog-image-5.webp"
             alt="Curae Velmorbi Estociosqu"
             class="w-full h-64 sm:h-full rounded-2xl object-cover transition-transform duration-300 group-hover:scale-110"
           />
@@ -143,7 +143,7 @@ function NewsPost() {
             </h2>
             <div class="flex items-center gap-2 mt-4 text-xs font-semibold text-slate-500 tracking-wide">
               <img
-                src="src/assets/blog-image-5.webp"
+                src="/assets/blog-image-5.webp"
                 alt="Michael"
                 class="h-6 w-6 rounded-full object-cover"
               />
@@ -161,7 +161,7 @@ function NewsPost() {
         {/* <!-- Post 6 --> */}
         <article class="grid grid-cols-1 sm:grid-cols-[380px_1fr] gap-8 py-8 group">
           <img
-            src="src/assets/blog-image-6.webp"
+            src="/assets/blog-image-6.webp"
             alt="Platea Habitasse Maecenas"
             class="w-full h-64 sm:h-full rounded-2xl object-cover transition-transform duration-300 group-hover:scale-110"
           />
@@ -174,7 +174,7 @@ function NewsPost() {
             </h2>
             <div class="flex items-center gap-2 mt-4 text-xs font-semibold text-slate-500 tracking-wide">
               <img
-                src="src/assets/blog-image-6.webp"
+                src="/assets/blog-image-6.webp"
                 alt="Michael"
                 class="h-6 w-6 rounded-full object-cover"
               />

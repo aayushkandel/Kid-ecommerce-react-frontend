@@ -311,7 +311,7 @@ const ProductDetails = () => {
 
   const productImage =
     images.length > 0
-      ? `http://127.0.0.1:8000/${images[0].image}`
+      ? `/api/${images[0].image}`
       : "/placeholder.png";
 
   // ==========================================

@@ -9,7 +9,7 @@ const Hero = () => {
           {/* <!-- Card 1: Collections --> */}
           <div className="group relative rounded-3xl overflow-hidden h-130 w-3/3">
             <img
-              src="src/assets/shop-hero-1.webp"
+              src="/assets/shop-hero-1.webp"
               alt="Collections"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
             />
@@ -47,7 +47,7 @@ const Hero = () => {
           {/* <!-- Card 2: New Arrivals --> */}
           <div className="group relative rounded-3xl overflow-hidden h-130 w-80">
             <img
-              src="src/assets/shop-hero-2.webp"
+              src="/assets/shop-hero-2.webp"
               alt="New Arrivals"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
             />
@@ -85,7 +85,7 @@ const Hero = () => {
           {/* <!-- Card 3: Discounts + Subscribe --> */}
           <div className="group absolute rounded-3xl overflow-hidden h-130 w-138 ml-198">
             <img
-              src="src/assets/shop-hero-3.webp"
+              src="/assets/shop-hero-3.webp"
               alt="Discounts"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
             />

@@ -199,7 +199,7 @@ useEffect(() => {
       <div className="w-full h-20 flex justify-between">
         {/* Logo */}
         <div className="w-1/4">
-          <img src="/src/assets/logo.svg" className="h-25 w-25" alt="" />
+          <img src="/assets/logo.svg" className="h-25 w-25" alt="" />
         </div>
 
         {/* Search */}

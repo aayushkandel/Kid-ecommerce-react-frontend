@@ -76,7 +76,7 @@ const CheckOut = () => {
 
             if (images.length > 0 && images[0]?.image) {
               details[item.product_id] =
-                `http://127.0.0.1:8000/${images[0].image}`;
+                `/api/${images[0].image}`;
             } else {
               details[item.product_id] = "/placeholder.png";
             }
